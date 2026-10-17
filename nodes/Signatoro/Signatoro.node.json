@@ -1,0 +1,19 @@
+{
+	"node": "n8n-nodes-signatoro.signatoro",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Communication", "Marketing & Content"],
+	"alias": ["email signature", "signature", "AI disclosure", "email footer", "outreach"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://github.com/BlastraIO/n8n-nodes-signatoro?tab=readme-ov-file#credentials"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://signatoro.com/docs/install-signature/agent/automations"
+			}
+		]
+	}
+}
