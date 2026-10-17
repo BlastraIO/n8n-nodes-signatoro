@@ -211,7 +211,7 @@ export class Signatoro implements INodeType {
 					const status = statusOf(error);
 
 					if (options.passThrough === false || !status || !SEND_WITHOUT.has(status)) {
-						throw new NodeApiError(this.getNode(), error as JsonObject, { itemIndex: i });
+						throw apiError(this, error, i);
 					}
 
 					// Sent without a signature, never with an invented one.
@@ -235,21 +235,39 @@ export class Signatoro implements INodeType {
 				});
 			} catch (error) {
 				if (this.continueOnFail()) {
+					const e = error as { message?: string; description?: string };
+
 					out.push({
-						json: { error: (error as Error).message },
+						json: {
+							error: e.message,
+							...(e.description ? { description: e.description } : {}),
+							...(bodyOf(error) ?? {}),
+						},
 						pairedItem: { item: i },
 					});
 					continue;
 				}
 
-				throw error instanceof NodeApiError
-					? error
-					: new NodeApiError(this.getNode(), error as JsonObject, { itemIndex: i });
+				throw apiError(this, error, i);
 			}
 		}
 
 		return [out];
 	}
+}
+
+/**
+ * An n8n API error carrying the item it failed on. The request helper
+ * already throws NodeApiError, and wrapping one again returns it as is,
+ * ignoring itemIndex, so set it on the error itself.
+ */
+function apiError(ctx: IExecuteFunctions, error: unknown, itemIndex: number) {
+	if (error instanceof NodeApiError) {
+		error.context.itemIndex = itemIndex;
+		return error;
+	}
+
+	return new NodeApiError(ctx.getNode(), error as JsonObject, { itemIndex });
 }
 
 async function request(
