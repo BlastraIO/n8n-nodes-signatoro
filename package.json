@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-signatoro",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Add the email signature saved on Signatoro - a person's, or an AI agent's with its AI disclosure line - to emails n8n workflows and AI agents send.",
 	"license": "MIT",
 	"homepage": "https://signatoro.com/docs/install-signature/agent/automations",
@@ -18,7 +18,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/BlastraIO/n8n-nodes-signatoro.git"
+		"url": "git+https://github.com/BlastraIO/n8n-nodes-signatoro.git"
 	},
 	"scripts": {
 		"build": "n8n-node build",
@@ -51,5 +51,9 @@
 	},
 	"peerDependencies": {
 		"n8n-workflow": "*"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
 	}
 }
