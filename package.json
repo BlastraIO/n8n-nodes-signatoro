@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-signatoro",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "Add the email signature saved on Signatoro - a person's, or an AI agent's with its AI disclosure line - to emails n8n workflows and AI agents send.",
 	"license": "MIT",
 	"homepage": "https://signatoro.com/docs/install-signature/agent/automations",
