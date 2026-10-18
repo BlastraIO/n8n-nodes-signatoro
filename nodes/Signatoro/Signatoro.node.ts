@@ -187,7 +187,7 @@ export class Signatoro implements INodeType {
 				if (operation === 'list') {
 					const reply = await request(this, '/api/v1/signatures', {});
 
-					out.push({ json: reply, pairedItem: { item: i } });
+					out.push({ json: forCaller(this, reply), pairedItem: { item: i } });
 					continue;
 				}
 
@@ -227,7 +227,7 @@ export class Signatoro implements INodeType {
 
 				out.push({
 					json: {
-						...reply,
+						...forCaller(this, reply),
 						...withBody(options.htmlBody, reply.html, label, 'html'),
 						...withBody(options.textBody, reply.text, label, 'text'),
 					},
@@ -287,6 +287,33 @@ async function request(
 		'signatoroApi',
 		options,
 	)) as IDataObject;
+}
+
+/**
+ * The API's sending notes (usage, howToChoose, docs) are written for an
+ * agent calling the API itself. Called as an AI agent's tool, the node has
+ * already made the call, and the model reads those notes as instructions it
+ * never asked for and comments on them in the email, so they are left out.
+ */
+const API_NOTES = ['usage', 'howToChoose', 'docs'];
+
+function forCaller<T extends IDataObject>(ctx: IExecuteFunctions, reply: T): T {
+	const asTool =
+		typeof ctx.isToolExecution === 'function'
+			? ctx.isToolExecution()
+			: ctx.getNode().type.endsWith('Tool');
+
+	if (!asTool) {
+		return reply;
+	}
+
+	const rest = { ...reply };
+
+	for (const key of API_NOTES) {
+		delete rest[key];
+	}
+
+	return rest;
 }
 
 /** The body with the signature after it, and the AI label first if any. */
